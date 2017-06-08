@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>vue源码解析--动态数据绑定</title>
+</head>
+<body>
+	<script>
+		//观察者构造函数
+		function Observer(data) {
+			this.data = data;
+			this.walk(data);
+		}
+
+		let p = Observer.prototype;
+
+		p.walk = function(obj) {
+			let val;
+			for(let key in obj) {
+				if(obj.hasOwnProperty(key)) {
+					val = obj[key];
+
+					//如果对象的属性仍然是一个对象的话，那么继续new一个Observer，直到到达最底层的属性位置。
+					if(typeof val === 'object') {
+						new Observer(val);
+					}
+
+					this.convert(key, val);
+				}
+			}
+		}
+
+		p.convert = function(key, val) {
+			Object.defineProperty(this.data, key, {
+				configurable: true,
+				enumerable: true,
+				get: function() {
+					console.log('访问了  ' + key);
+					return val;
+				},
+				set: function(newVal) {
+					console.log('你设置了  ' + key + '，新值为：' + newVal);
+					if(newVal === val) return;
+					val = newVal;
+				}
+			})
+		}
+
+		var data = {
+			user: {
+				name: 'tom',
+				age: '21'
+			},
+			address: {
+				city: 'hangzhou'
+			}
+		}
+
+		var observer = new Observer(data);
+	</script>
+</body>
+</html>

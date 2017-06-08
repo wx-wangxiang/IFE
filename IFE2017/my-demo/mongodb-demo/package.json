@@ -1,0 +1,20 @@
+{
+  "name": "mongodb-demo",
+  "version": "1.0.0",
+  "description": "a mongodb demo",
+  "main": "server.js",
+  "dependencies": {
+    "mongodb": "^2.2.28",
+    "mongoose": "^4.10.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "mongodb"
+  ],
+  "author": "wangxiang",
+  "license": "ISC"
+}
