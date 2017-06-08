@@ -26,7 +26,7 @@ if(system.args.length === 1) {
 result.word = getKeywords(system.args);
 
 console.log(result.word);
-page.open('http://www.baidu.com/s?wd=' + encodeURIComponent(result.word), function(status) {
+page.open('http://nba.stats.qq.com/nbascore/?mid=1470069&ptag=baidu.ald.sc.nba', function(status) {
 	console.log(status);
 	if (status === 'success') {
 		page.includeJs('http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js', function() {
@@ -61,15 +61,29 @@ function getDuration() {
 }
 //解析html结构，获取想要的数据
 function getContainer() {
-	var content = $('#content_left');
-	var containers = content.find('.c-container');
+	/*var content = $('.data');
+	var containers = content.find('.c-container');*/
 	var results = [];
 
-	containers.each(function(index, item) {
+	var tempObj = {
+       title: '',  //结果条目的标题
+       score: '', //比分
+       quarter: '', //节数            
+       time: '' //剩余时间
+    };
+    var visitgoal = $('.visitgoal').text();
+    var homegoal = $('.homegoal').text();
+    var quarter = $('.data').find('.bg:first').find('td:last').text();
+
+    tempObj.score = visitgoal + ':' + homegoal;
+    tempObj.quarter = quarter;
+    results.push(tempObj);
+
+	/*containers.each(function(index, item) {
 		var tempObj = {
                title: '',  //结果条目的标题
                info: '', //摘要
-               link: '', //链接            
+               link: '', //链接
                pic: '' //缩略图地址
             };
         tempObj.title = $(item).find('.t > a').text() || '';
@@ -77,7 +91,7 @@ function getContainer() {
         tempObj.link = $(item).find('.t > a:first').attr('href') || '';
         tempObj.pic = $(item).find('.c-row img').attr('src') || '';
         results.push(tempObj);
-	});
+	});*/
 	return results;
 }
 //console.log('hello');
