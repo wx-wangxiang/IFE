@@ -1,16 +1,17 @@
-const fn_index = async(ctx, next) => {
-	ctx.render('hello.html');
-};
-const fn_signin = async(ctx, next) => {
-	var name = ctx.request.body.name || '',
-		password = ctx.request.body.password || '';
-	if(name === 'koa' && password === '12345') {
-		ctx.response.body = `<p>welcome koa</p>`;
-	} else {
-		ctx.response.body = `<p>log failed</p>
-		<a href="/">重新登录</a>`;
+//引入模板引擎
+const nunjucks = require('nunjucks');
+
+function templating(path, opts) {
+	const env = createEnv(path, opts);
+
+	return async(ctx, next) => {
+		ctx.render = function(view, model) {
+			ctx.response.type = 'text/html';
+			ctx.response.body = env.render(view, Object.assign({}, ctx.state || {}, model || {}));
+		};
+		await next();
 	}
-};
+}
 
 function createEnv(path, opts) {
 	var autoescape = opts.autoescape || true,
@@ -33,7 +34,4 @@ function createEnv(path, opts) {
 	return env;
 }
 
-module.exports = {
-	'GET /': fn_index,
-	'POST /signin': fn_signin
-}
+module.exports = templating;
