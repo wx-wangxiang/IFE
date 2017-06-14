@@ -21,12 +21,10 @@ app.use(async(ctx, next) => {
 	console.log(`${ctx.request.method} ${ctx.request.url}`);
 	await next();
 })
-
 app.use(staticFile('/static/', __dirname + '/static'));
-
 app.use(bodyParser());
 app.use(templating('views', {}))
 app.use(controller());
 
-app.listen(3000);
+app.listen(8000);
 console.log('app start at port 3000');

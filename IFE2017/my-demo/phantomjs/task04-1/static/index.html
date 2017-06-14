@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>index</title>
+	<link href="http://static.tcy365.com/cdn/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+	<link href="http://static.tcy365.com/cdn/bootstrap/3.3.5/css/theme.css" rel="stylesheet">
+    <style type="text/css">
+        .panel>.table-bordered>thead>tr:first-child>th {width: 50px;}
+    </style>
+</head>
+<body style="background: #00FF00 url(/static/img/147982286620415300_a580xH.jpg) no-repeat fixed top; background-size: cover;">
+	<div class="contain-fluid" id="app">
+        <div class="container-fluid">
+            <!-- 搜索框 -->
+            <div class="well well-sm">
+                <form class="form-horizontal">
+                    <div class="row">
+                        <div class="col-lg-10 col-sm-10 text-nowrap">
+                            <div class="col-lg-3 col-sm-4">
+                                <div class="form-group form-group-sm">
+                                    <label class="control-label col-lg-4 col-sm-4">搜索关键字</label>
+                                    <div class="col-lg-8 col-sm-8">
+                                        <input class="form-control" type="text" name="keyword" v-model="keyword">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-4">
+                                <div class="form-group form-group-sm">
+                                    <label class="control-label col-lg-4 col-sm-4">选择模拟的设备</label>
+                                    <div class="col-lg-8 col-sm-8">
+                                        <select class="form-control" name="device" v-model="device">
+                                            <option value="iphone5">iphone5</option>
+                                            <option value="iphone6">iphone6</option>
+                                            <option value="ipad">ipad</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-sm-2 text-right">
+                            <div class="form-group form-group-sm">
+                                <button type="submit" class="btn btn-primary btn-sm" @click.prevent="getResult"><i class="glyphicon glyphicon-search"></i> 搜索</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- 表头 -->
+            <div class="clearfix mb10">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-plus"></i> 搜索结果</button>
+                </div>
+            </div>
+            <!-- 表格 -->
+            <div class="panel panel-default">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>搜索关键词</th>
+                            <th>设备</th>
+                            <th>搜索时间</th>
+                            <th>标题</th>
+                            <th>描述信息</th>
+                            <th>链接</th>
+                            <th>缩略图</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in tableList">
+                            <td>{{item.no}}</td>
+                            <td>{{item.keyword}}</td>
+                            <td>{{item.device}}</td>
+                            <td>{{item.time}}</td>
+                            <td>{{item.title}}</td>
+                            <td>{{item.info}}</td>
+                            <td>{{item.link}}</td>
+                            <td>{{item.pic}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="10" style="height: 300px;" v-if="wait" :class="{'loading': wait}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+	</div>
+</body>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="http://static.tcy365.com/cdn/jquery/2.1.0/jquery.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#app',
+        data: {
+            keyword: '',
+            device: '',
+            wait: false,
+            tableList: []
+        },
+        methods: {
+            getResult() {
+                const Data = {
+                    keyword: this.keyword,
+                    device: this.device
+                };
+
+                this.wait = true;
+                this.tableList = [];
+                $.ajax({
+                    url: '/getResult',
+                    type: 'post',
+                    data: Data,
+                    dataType: 'json',
+                    cache: false,
+                    success: res => {
+                        if (res.Status) {
+                            this.wait = false;
+                            this.tableList = res.Data;
+                        }
+                    },
+                    error: function(res) {
+                        console.log('error');
+                    }
+                })
+            }
+        }
+    })
+</script>
+</html>
