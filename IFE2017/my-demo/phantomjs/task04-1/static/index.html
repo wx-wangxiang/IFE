@@ -5,10 +5,10 @@
 	<link href="http://static.tcy365.com/cdn/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 	<link href="http://static.tcy365.com/cdn/bootstrap/3.3.5/css/theme.css" rel="stylesheet">
     <style type="text/css">
-        .panel>.table-bordered>thead>tr:first-child>th {width: 50px;}
+        .panel>.table-bordered>thead>tr:first-child>th {width: 80px;}
     </style>
 </head>
-<body style="background: #00FF00 url(/static/img/147982286620415300_a580xH.jpg) no-repeat fixed top; background-size: cover;">
+<body>
 	<div class="contain-fluid" id="app">
         <div class="container-fluid">
             <!-- 搜索框 -->
@@ -29,6 +29,7 @@
                                     <label class="control-label col-lg-4 col-sm-4">选择模拟的设备</label>
                                     <div class="col-lg-8 col-sm-8">
                                         <select class="form-control" name="device" v-model="device">
+                                            <option value="">PC</option>
                                             <option value="iphone5">iphone5</option>
                                             <option value="iphone6">iphone6</option>
                                             <option value="ipad">ipad</option>
@@ -75,13 +76,18 @@
                             <td>{{item.title}}</td>
                             <td>{{item.info}}</td>
                             <td>{{item.link}}</td>
-                            <td>{{item.pic}}</td>
+                            <td>
+                                <img :src="item.localImg">
+                            </td>
                         </tr>
                         <tr>
                             <td colspan="10" style="height: 300px;" v-if="wait" :class="{'loading': wait}"></td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="clearfix text-right">
+                <div v-html="searchInfo" class="text-center"></div>
             </div>
         </div>
 	</div>
@@ -95,7 +101,8 @@
             keyword: '',
             device: '',
             wait: false,
-            tableList: []
+            tableList: [],
+            searchInfo: ''
         },
         methods: {
             getResult() {
@@ -106,6 +113,7 @@
 
                 this.wait = true;
                 this.tableList = [];
+                this.searchInfo = '';
                 $.ajax({
                     url: '/getResult',
                     type: 'post',
@@ -116,9 +124,14 @@
                         if (res.Status) {
                             this.wait = false;
                             this.tableList = res.Data;
+                            if (this.tableList.length === 0) {
+                                this.searchInfo = '暂时没有数据...';
+                            }
                         }
                     },
-                    error: function(res) {
+                    error: res => {
+                        this.wait = false;
+                        this.searchInfo = "出错了!";
                         console.log('error');
                     }
                 })

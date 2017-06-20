@@ -3,7 +3,7 @@ var page = require('webpage').create();
 var config = require('./config.json');
 var system = require('system'); //system模块用于获取命令行中输入的参数
 var timeStart = +new Date(); //该次搜索花费的时间
-var url = 'http://www.baidu.com/s?wd=';
+var url = 'https://www.baidu.com/s?wd=';
 var result = {
        code: 0, //返回状态码，1为成功，0为失败
        msg: '抓取失败', //返回的信息
@@ -91,7 +91,7 @@ function getContainer(device) {
 			default: 	tempObj.title = $(item).find('.t > a').text() || '';
 			        	tempObj.info = $(item).find('.c-abstract').text() || '';
 			        	tempObj.link = $(item).find('.t > a:first').attr('href') || '';
-			        	tempObj.pic = $(item).find('.c-row img').attr('src') || '';
+			        	tempObj.pic = $(item).find('.c-row .c-img').attr('src') || '';
 		}
 		results.push(tempObj);
 	});
@@ -110,7 +110,7 @@ function parseDOM(device, item) {
 		case 'iphone5': tempObj.title = $(item).find('a .c-title').text() || '';
 						tempObj.info = $(item).find('.c-abstract a p').text() || '';
 						tempObj.link = $(item).find('a').attr('href');
-						tempObj.pic = $(item).find('..c-abstract a img').attr('src');
+						tempObj.pic = $(item).find('.c-abstract a img').attr('src');
 		break;
 		default: 	tempObj.title = $(item).find('.t > a').text() || '';
 		        	tempObj.info = $(item).find('.c-abstract').text() || '';
